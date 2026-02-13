@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+cryptography
+pydantic
+pydantic-settings
+python-multipart
+pyjwt
+passlib[bcrypt]
+httpx
+python-jose
+google-auth
+requests
