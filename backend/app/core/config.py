@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     
     @property
     def DATABASE_URL(self) -> str:
+        # Use DATABASE_URL from Render if available (PostgreSQL)
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            return database_url
+        # Fallback to MySQL for local development
         return f"mysql+pymysql://{self.MYSQL_USER}:{quote_plus(self.MYSQL_PASSWORD)}@{self.MYSQL_SERVER}:{self.MYSQL_PORT}/{self.MYSQL_DB}"
 
     # AUTHENTICATION
