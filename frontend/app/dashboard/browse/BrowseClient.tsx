@@ -32,7 +32,6 @@ export default function BrowseClient({
     tvShows,
     newReleases,
 }: BrowseClientProps) {
-    console.log("BrowseClient Refs:", { newReleasesLength: newReleases?.length, trendingLength: trendingContent?.length });
     const [modalContent, setModalContent] = useState<Content | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Content[]>([]);

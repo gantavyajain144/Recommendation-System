@@ -29,7 +29,7 @@ export default async function DashboardPage() {
 
     return (
         <BrowseClient
-            heroContent={heroContent}
+            heroContentArray={heroContent ? [heroContent] : []}
             trendingContent={trendingData}
             tvShows={tvShowsData}
             actionContent={actionData}
