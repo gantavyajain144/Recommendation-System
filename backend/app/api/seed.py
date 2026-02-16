@@ -25,10 +25,24 @@ async def seed_database(db: Session = Depends(get_db)):
         # Read CSV file
         csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "NetFlix.csv")
         
-        if not os.path.exists(csv_path):
-            raise HTTPException(status_code=404, detail=f"CSV file not found at {csv_path}")
+        print(f"Looking for CSV at: {csv_path}")
+        print(f"File exists: {os.path.exists(csv_path)}")
+        print(f"Current directory: {os.getcwd()}")
+        print(f"__file__: {__file__}")
         
+        if not os.path.exists(csv_path):
+            # Try alternative path
+            csv_path = os.path.join(os.path.dirname(__file__), "..", "..", "NetFlix.csv")
+            csv_path = os.path.abspath(csv_path)
+            print(f"Trying alternative path: {csv_path}")
+            print(f"Alternative exists: {os.path.exists(csv_path)}")
+            
+            if not os.path.exists(csv_path):
+                raise HTTPException(status_code=404, detail=f"CSV file not found. Tried: {csv_path}")
+        
+        print(f"Reading CSV from: {csv_path}")
         df = pd.read_csv(csv_path)
+        print(f"CSV loaded successfully. Rows: {len(df)}, Columns: {list(df.columns)}")
         
         # Process and insert data
         added_count = 0
