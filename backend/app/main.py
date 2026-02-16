@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.api import auth, users, content, upload
+from app.api import auth, users, content, upload, seed
 from app.db.base import Base
 from app.db.session import engine
 from app.models.user import User
@@ -38,6 +38,7 @@ app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["aut
 app.include_router(users.router, prefix=f"{settings.API_V1_STR}/users", tags=["users"])
 app.include_router(content.router, prefix=f"{settings.API_V1_STR}/content", tags=["content"])
 app.include_router(upload.router, prefix=f"{settings.API_V1_STR}/upload", tags=["upload"])
+app.include_router(seed.router, prefix=f"{settings.API_V1_STR}", tags=["admin"])
 @app.get("/")
 def root():
     return {"message": "Welcome to Modern Analytics API"}
