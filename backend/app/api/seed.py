@@ -49,14 +49,14 @@ async def seed_database(db: Session = Depends(get_db)):
                     description=row.get('description', ''),
                     release_year=int(row['release_year']) if pd.notna(row.get('release_year')) else None,
                     rating=row.get('rating', ''),
-                    duration=row.get('duration', ''),
-                    genres=row.get('listed_in', ''),
-                    cast=row.get('cast', ''),
-                    director=row.get('director', ''),
-                    country=row.get('country', ''),
-                    date_added=row.get('date_added', ''),
-                    poster_url=row.get('poster_url', ''),
-                    video_url=row.get('video_url', '')
+                    duration=str(row.get('duration', '')),
+                    genres=row.get('genres', ''),
+                    cast=str(row.get('cast', '')) if pd.notna(row.get('cast')) else '',
+                    director=str(row.get('director', '')) if pd.notna(row.get('director')) else '',
+                    country=str(row.get('country', '')) if pd.notna(row.get('country')) else '',
+                    date_added=str(row.get('date_added', '')) if pd.notna(row.get('date_added')) else '',
+                    poster_url='',
+                    video_url=''
                 )
                 
                 db.add(content)
