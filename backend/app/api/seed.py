@@ -50,26 +50,29 @@ async def seed_database(db: Session = Depends(get_db)):
         
         for index, row in df.iterrows():
             try:
-                # Check if this content already exists (by title)
-                existing = db.query(Content).filter(Content.title == row['title']).first()
+                # Check if this content already exists (by title or show_id)
+                existing = db.query(Content).filter(
+                    (Content.title == row['title']) | (Content.show_id == row.get('show_id', ''))
+                ).first()
                 if existing:
                     skipped_count += 1
                     continue
                 
-                # Create content object
+                # Create content object - use exact field names from Content model
                 content = Content(
+                    show_id=str(row.get('show_id', '')),
                     title=row['title'],
                     type=row['type'],
-                    description=row.get('description', ''),
+                    description=str(row.get('description', '')) if pd.notna(row.get('description')) else '',
                     release_year=int(row['release_year']) if pd.notna(row.get('release_year')) else None,
-                    rating=row.get('rating', ''),
-                    duration=str(row.get('duration', '')),
-                    genres=row.get('genres', ''),
+                    rating=str(row.get('rating', '')) if pd.notna(row.get('rating')) else '',
+                    duration=str(row.get('duration', '')) if pd.notna(row.get('duration')) else '',
+                    listed_in=str(row.get('genres', '')) if pd.notna(row.get('genres')) else '',  # CSV has 'genres', model has 'listed_in'
                     cast=str(row.get('cast', '')) if pd.notna(row.get('cast')) else '',
                     director=str(row.get('director', '')) if pd.notna(row.get('director')) else '',
                     country=str(row.get('country', '')) if pd.notna(row.get('country')) else '',
                     date_added=str(row.get('date_added', '')) if pd.notna(row.get('date_added')) else '',
-                    poster_url='',
+                    image_url='',  # Model has 'image_url', not 'poster_url'
                     video_url=''
                 )
                 
@@ -79,6 +82,7 @@ async def seed_database(db: Session = Depends(get_db)):
                 # Commit in batches of 100
                 if added_count % 100 == 0:
                     db.commit()
+                    print(f"Progress: {added_count} items added...")
                     
             except Exception as e:
                 print(f"Error processing row {index}: {e}")
